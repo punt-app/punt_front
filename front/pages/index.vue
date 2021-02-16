@@ -22,7 +22,7 @@
 export default {
   methods: {
     async getUsers() {
-      const res = await this.$axios.get('http://localhost:5001/punt-api-67f95/us-central1/api/users')
+      const res = await this.$axios.get('/user/all')
       console.log('res: ', res)
     }
   }

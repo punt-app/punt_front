@@ -1,11 +1,4 @@
-import axios from 'axios'
-
-const baseUrl = 
-  process.env.NODE_ENV === 'production'
-  ? process.env.API_URL
-  : 'http://localhost:10080/'
-
-console.log('baseUrl: ', baseUrl)
+const baseUrl = process.env.FB_FUNCTIONS_URL
 
 const axiosConfig = {
   baseURL: baseUrl,
