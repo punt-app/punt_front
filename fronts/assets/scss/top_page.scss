@@ -1,0 +1,56 @@
+.page__wrapper {
+  display: flex;
+  min-height: 100vh;
+
+  background-image: url('~assets/images/woman_1.png'),
+                    url('~assets/images/man_1.png'),
+                    url('~assets/images/title_bg.png');
+  background-repeat: no-repeat,
+                     no-repeat,
+                     no-repeat;
+  background-position: left calc(50% - 35%) bottom 4rem,
+                       left calc(50% + 35%) bottom 4rem,
+                       left 50% bottom 8rem;
+  background-size: 8rem, 8.3rem, 18rem;
+
+  @media (min-width: 640px) {
+    background-position: left calc(50% - 25%) bottom 4rem,
+                         left calc(50% + 25%) bottom 4rem,
+                         left 50% bottom 8rem;
+    background-size: 10rem, 10.5rem, 20rem;
+  }
+}
+
+.page__container {
+  color: $base-text-color;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 0 4rem;
+  margin: 0 auto;
+  max-width: 48rem;
+}
+
+.title {
+  font-size: 4rem;
+  font-weight: bold;
+  margin-bottom: 4rem;
+
+  @media (min-width: 640px) {
+    font-size: 4.8rem;
+  }
+}
+
+.message {
+  font-size: 1.6rem;
+  margin-bottom: 4rem;
+
+  @media (min-width: 640px) {
+    font-size: 2rem;
+  }
+}
+
+.button__line_account {
+  margin-bottom: 16rem;
+}

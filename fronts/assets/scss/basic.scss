@@ -1,0 +1,62 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 10px;
+  font-family:
+  'Source Sans Pro',
+  -apple-system,
+  BlinkMacSystemFont,
+  'Segoe UI',
+  Roboto,
+  'Helvetica Neue',
+  Arial,
+  sans-serif;
+}
+
+body {
+  position: relative;
+  min-height: 100vh;
+  background-color: #f4f6fa;
+  color: $base-text-color;
+  font-family: $global-font-family;
+  font-size: 1.5rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: subpixel-antialiased;
+}
+
+a {
+  color: $link-color;
+  text-decoration: none;
+  transition: 0.2s all;
+
+  &:hover,
+  &:focus {
+    opacity: 0.6;
+  }
+}
+
+p {
+  margin-bottom: 1.2em;
+}
+
+/** Definition list */
+dt {
+  margin-bottom: 0.2rem;
+  font-weight: bold;
+}
+
+dd {
+  margin-bottom: 1.2em;
+}
+
+.screen-reader-text {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(1px, 1px, 1px, 1px);
+}
