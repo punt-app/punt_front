@@ -11,15 +11,15 @@ const collection = require('../utils/collection')(collectionName)
 const redirectUri = 'https://192.168.11.7:3000/edit'
 const clientId = 1655667922
 const clientSecret = 'f14b88eb580c522cf75bdbb79e4c802d'
-const convertRequestDataString = token => {
-  return `grant_type=authorization_code&code=${token}&redirect_uri=${redirectUri}&client_id=${clientId}&client_secret=${clientSecret}`
+const convertRequestDataString = code => {
+  return `grant_type=authorization_code&code=${code}&redirect_uri=${redirectUri}&client_id=${clientId}&client_secret=${clientSecret}`
 }
 
-const requestToken = (param) => {
+const requestToken = param => {
   return new Promise((resolve, reject) => {
     request(param, (error, response, body) => {
       if (error) {
-        reject('できなかった')
+        reject(error)
       } else {
         resolve(body)
       }
@@ -27,27 +27,13 @@ const requestToken = (param) => {
   })
 }
 
-// アクセストークンを発行する
-router.post('/token', async (req, res) => {
-  const reqToken = req.body.token
-  if (!reqToken) {
-    return res.status(400).send('Access Token not found')
-  }
-
-  const result = await getLineToken(reqToken)
-  const resultJson = JSON.parse(result)
-  if (!resultJson.access_token) {
-    return res.status(400).send(resultJson)
-  }
-  return res.status(200).send(resultJson)
-})
-
-const getLineToken = async reqToken => {
+// アクセストークンの発行
+const getLineToken = async code => {
   const url = 'https://api.line.me/oauth2/v2.1/token'
   const headers = {
     'Content-Type': 'application/x-www-form-urlencoded'
   }
-  const dataString = convertRequestDataString(reqToken)
+  const dataString = convertRequestDataString(code)
   const options = {
     url: url,
     method: 'POST',
@@ -58,25 +44,36 @@ const getLineToken = async reqToken => {
 }
 
 // アクセストークンの検証
-router.get('/verify', async (req, res) => {
+const verifyLineToken = async token => {
+  const url = 'https://api.line.me/oauth2/v2.1/verify'
+
+  return await axios.get(url, {
+    params: {
+      access_token: token
+    }
+  })
+}
+
+// アクセストークンの発行と検証
+router.post('/token', async (req, res) => {
   const reqToken = req.body.token
   if (!reqToken) {
+    return res.status(400).send('LINE code not found')
+  }
+
+  const result = await getLineToken(reqToken)
+  const lineAccessToken = JSON.parse(result).access_token
+  if (!lineAccessToken) {
     return res.status(400).send('Access Token not found')
   }
 
-  const url = 'https://api.line.me/oauth2/v2.1/verify'
-
-  await axios.get(url, {
-    params: {
-      access_token: reqToken
-    }
-  })
-    .then(resul => {
-      return res.status(200).send(resul.data)
-    })
-    .catch(e => {
-      return res.status(400).send(e)
-    })
+  const lineTokenVerified = await verifyLineToken(lineAccessToken)
+  const verifiedData = lineTokenVerified.data
+  if (!verifiedData.client_id) {
+    return res.status(400).send('Access Token not verified')
+  }
+  
+  return res.status(200).send(verifiedData)
 })
 
 module.exports = router
