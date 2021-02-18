@@ -58,19 +58,25 @@ const verifyLineToken = async token => {
 router.post('/token', async (req, res) => {
   const reqToken = req.body.token
   if (!reqToken) {
-    return res.status(400).send('LINE code not found')
+    return res.status(400).send({
+      message: 'LINE code not found'
+    })
   }
 
   const result = await getLineToken(reqToken)
   const lineAccessToken = JSON.parse(result).access_token
   if (!lineAccessToken) {
-    return res.status(400).send('Access Token not found')
+    return res.status(400).send({
+      message: 'Access Token not found'
+    })
   }
 
   const lineTokenVerified = await verifyLineToken(lineAccessToken)
   const verifiedData = lineTokenVerified.data
   if (!verifiedData.client_id) {
-    return res.status(400).send('Access Token not verified')
+    return res.status(400).send({
+      message: 'Access Token not verified'
+    })
   }
   
   return res.status(200).send(verifiedData)
