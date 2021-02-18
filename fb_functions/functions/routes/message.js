@@ -4,14 +4,14 @@ const convertGetResponse = require('../utils/convertGetResponse')
 
 // collection の指定
 const collectionName = 'message'
-const request = require('../utils/request')(collectionName)
+const collection = require('../utils/collection')(collectionName)
 
 const getServerTimestamp = require('../utils/getServerTimestamp')
 
 // すべてのメッセージを取得
 router.get('/all', async (req, res) => {
   try {
-    const response = await request.get()
+    const response = await collection.get()
     const data = convertGetResponse(response)
     res.status(201).send(data)
   } catch (error) {
@@ -27,7 +27,7 @@ router.post('/', async (req, res) => {
   };
 
   try {
-    const response = await request.add(message)
+    const response = await collection.add(message)
     res.status(201).send(`Created a new message: ${response.id}`)
   } catch (error) {
     res.status(400).send('Error')
