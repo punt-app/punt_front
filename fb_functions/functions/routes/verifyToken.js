@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router()
 const request = require('request')
+const axios = require('axios')
 
 // collection の指定
 const collectionName = 'verifyToken'
@@ -29,51 +30,53 @@ const requestToken = (param) => {
 // アクセストークンを発行する
 router.post('/token', async (req, res) => {
   const reqToken = req.body.token
-
   if (!reqToken) {
     return res.status(400).send('Access Token not found')
   }
-  
+
+  const result = await getLineToken(reqToken)
+  const resultJson = JSON.parse(result)
+  if (!resultJson.access_token) {
+    return res.status(400).send(resultJson)
+  }
+  return res.status(200).send(resultJson)
+})
+
+const getLineToken = async reqToken => {
+  const url = 'https://api.line.me/oauth2/v2.1/token'
   const headers = {
     'Content-Type': 'application/x-www-form-urlencoded'
-  };
-
+  }
   const dataString = convertRequestDataString(reqToken)
-
   const options = {
-    url: 'https://api.line.me/oauth2/v2.1/token',
+    url: url,
     method: 'POST',
     headers: headers,
     body: dataString
   };
+  return await requestToken(options)
+}
 
-  (async function(){
-    try{
-      const result = await requestToken(options);
-      console.log('📧', result)
-      return res.status(200).send(JSON.parse(result))
-    }catch(error){
-      return res.status(400).send(error)
-    }
-  })();
-})
-
+// アクセストークンの検証
 router.get('/verify', async (req, res) => {
   const reqToken = req.body.token
-
-  const options = {
-    method: 'GET',
-    url: `https://api.line.me/oauth2/v2.1/verify?access_token=${reqToken}`
+  if (!reqToken) {
+    return res.status(400).send('Access Token not found')
   }
 
-  (async function(){
-    try{
-      const result = await requestToken(options);
-      return res.status(200).send(JSON.parse(result))
-    }catch(error){
-      return res.status(400).send(error)
+  const url = 'https://api.line.me/oauth2/v2.1/verify'
+
+  await axios.get(url, {
+    params: {
+      access_token: reqToken
     }
-  })();
+  })
+    .then(resul => {
+      return res.status(200).send(resul.data)
+    })
+    .catch(e => {
+      return res.status(400).send(e)
+    })
 })
 
 module.exports = router
