@@ -4,7 +4,7 @@ const app = express();
 const path = require('path');
 
 // 設定ファイルの呼び出し
-const configs = require('./config/index')
+const configs = require('../config/index')
 
 // CORS 設定
 const cors = require('cors')
@@ -15,7 +15,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'routes')));
 
 // router の呼び出し
-const indexRouter = require('./routes/index.js')
+const indexRouter = require('../routes/index')
 app.use('/', indexRouter);
 
 // 出力

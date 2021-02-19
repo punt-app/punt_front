@@ -1,23 +1,35 @@
-const express = require("express");
+export {}
+
+const functions = require("firebase-functions")
+const express = require("express")
 const router = express.Router()
 const request = require('request')
 const axios = require('axios')
 
 // collection の指定
-const collectionName = 'verifyToken'
-const collection = require('../utils/collection')(collectionName)
+// const collectionName: string = 'verifyToken'
+// const collection = require('../utils/collection')(collectionName)
 
 // request data の変換
-const redirectUri = 'https://192.168.11.7:3000/edit'
-const clientId = 1655667922
-const clientSecret = 'f14b88eb580c522cf75bdbb79e4c802d'
-const convertRequestDataString = code => {
+const redirectUri: string = functions.config().project_config.line_login_redirect_uri
+const clientId: string = functions.config().project_config.line_client_id
+const clientSecret: string = functions.config().project_config.line_client_secret
+const convertRequestDataString = (code: string): string => {
   return `grant_type=authorization_code&code=${code}&redirect_uri=${redirectUri}&client_id=${clientId}&client_secret=${clientSecret}`
 }
 
-const requestToken = param => {
+interface headers {
+  'Content-Type': string
+}
+interface params {
+  url: string,
+  method: string,
+  headers: headers,
+  body: string
+}
+const requestToken = (param: params): Promise<string> => {
   return new Promise((resolve, reject) => {
-    request(param, (error, response, body) => {
+    request(param, (error: Error, response: any, body: any) => {
       if (error) {
         reject(error)
       } else {
@@ -28,13 +40,13 @@ const requestToken = param => {
 }
 
 // アクセストークンの発行
-const getLineToken = async code => {
+const getLineToken = async (code: string) => {
   const url = 'https://api.line.me/oauth2/v2.1/token'
-  const headers = {
+  const headers: headers = {
     'Content-Type': 'application/x-www-form-urlencoded'
   }
   const dataString = convertRequestDataString(code)
-  const options = {
+  const options: params = {
     url: url,
     method: 'POST',
     headers: headers,
@@ -44,8 +56,8 @@ const getLineToken = async code => {
 }
 
 // アクセストークンの検証
-const verifyLineToken = async token => {
-  const url = 'https://api.line.me/oauth2/v2.1/verify'
+const verifyLineToken = async (token: string) => {
+  const url: string = 'https://api.line.me/oauth2/v2.1/verify'
 
   return await axios.get(url, {
     params: {
@@ -55,8 +67,8 @@ const verifyLineToken = async token => {
 }
 
 // アクセストークンの発行と検証
-router.post('/token', async (req, res) => {
-  const reqToken = req.body.token
+router.post('/token', async (req: any, res: any) => {
+  const reqToken: string = req.body.token
   if (!reqToken) {
     return res.status(400).send({
       message: 'LINE code not found'
