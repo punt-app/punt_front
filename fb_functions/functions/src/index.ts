@@ -15,7 +15,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'routes')));
 
 // router の呼び出し
-const indexRouter = require('../routes/index.js')
+const indexRouter = require('../routes/index')
 app.use('/', indexRouter);
 
 // 出力
