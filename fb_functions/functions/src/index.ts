@@ -1,13 +1,16 @@
-const functions = require("firebase-functions");
-const express = require("express");
+import * as functions from 'firebase-functions'
+import path from 'path'
+import express from 'express'
 const app = express();
-const path = require('path');
+
+// 環境変数の呼び出し
+require('./env')
 
 // 設定ファイルの呼び出し
-const configs = require('../config/index')
+import configs from '../config/index'
 
 // CORS 設定
-const cors = require('cors')
+import cors from 'cors'
 app.use(cors(configs.cors))
 
 app.use(express.json());
@@ -15,7 +18,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'routes')));
 
 // router の呼び出し
-const indexRouter = require('../routes/index')
+import indexRouter from '../routes/index'
 app.use('/', indexRouter);
 
 // 出力

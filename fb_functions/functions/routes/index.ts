@@ -1,9 +1,6 @@
-export {}
-
-const express = require("express");
-const router = express.Router()
-
-const fs = require('fs');
+import fs from 'fs'
+import express from 'express'
+const indexRouter = express.Router()
 
 fs.readdir('./routes', (err: any, files: any) => {
   if (err !== null) {
@@ -11,12 +8,14 @@ fs.readdir('./routes', (err: any, files: any) => {
   }
 
   // ディレクトリ構造から router 名を取得
-  files.filter((file: string): boolean => file !== 'index.js')
+  files.filter((file: string): boolean => file !== 'index.ts')
     .map((file: string): string => file.split('\.')[0])
     .forEach((name: string): void => {
-      router.use(`/${name}`, require(`./${name}`))
+      indexRouter.use(`/${name}`, require(`./${name}`))
       console.log(`Route "${name}" has set.`)
     })
 })
 
-module.exports = router
+
+export default indexRouter
+// module.exports = indexRouter

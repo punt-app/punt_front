@@ -1,14 +1,13 @@
-export {}
-
-const functions = require("firebase-functions")
-const express = require("express")
+import * as functions from 'firebase-functions'
+import express from 'express'
 const router = express.Router()
-const request = require('request')
-const axios = require('axios')
+import request from 'request'
+import axios from 'axios'
 
-// collection の指定
+// // collection の指定
 // const collectionName: string = 'verifyToken'
-// const collection = require('../utils/collection')(collectionName)
+// import { collection } from '../utils/collection'
+// const verifyTokenCol = collection(collectionName)
 
 // request data の変換
 const redirectUri: string = functions.config().project_config.line_login_redirect_uri
@@ -94,4 +93,5 @@ router.post('/token', async (req: any, res: any) => {
   return res.status(200).send(verifiedData)
 })
 
+// TODO: export default に変更
 module.exports = router

@@ -1,17 +1,17 @@
-export {}
-
-const express = require("express");
+import express from 'express'
 const router = express.Router()
-const convertGetResponse = require('../utils/convertGetResponse')
 
 // collection の指定
 const collectionName: string = 'user'
-const collection = require('../utils/collection')(collectionName)
+import { collection } from '../utils/collection'
+const userCol = collection(collectionName)
+
+import { convertGetResponse } from '../utils/convertGetResponse'
 
 // すべてのユーザーを取得
 router.get('/all', async (req: any, res: any) => {
   try {
-    const response = await collection.get()
+    const response = await userCol.get()
     const data = convertGetResponse(response)
     res.status(201).send(data)
   } catch (error) {
@@ -23,7 +23,7 @@ router.get('/', async (req: any, res: any) => {
   const userId = req.query.userId
   console.log('id: ', userId)
   try {
-    const response = await collection.doc(userId).get()
+    const response = await userCol.doc(userId).get()
     res.status(200).json({id:response.id, data:response.data()})
   } catch (error) {
     res.status(400).send('Error')
@@ -37,11 +37,12 @@ router.post('/', async (req: any, res: any) => {
   };
 
   try {
-    const response = await collection.add(message)
+    const response = await userCol.add(message)
     res.status(201).send(`Created a new user: ${response.id}`)
   } catch (error) {
     res.status(400).send('Error')
   }
 })
 
+// TODO: export default に変更
 module.exports = router
