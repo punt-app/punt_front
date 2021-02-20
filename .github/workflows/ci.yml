@@ -42,8 +42,9 @@ jobs:
             ${{ runner.os }}-yarn-
 
       - name: Install dependencies 👨🏻‍💻
+        working-directory: front
         run: yarn
 
-
-      - name: Run tests 🧪
-        run: yarn test
+      # - name: Run tests 🧪
+      #   working-directory: front
+      #   run: yarn test
