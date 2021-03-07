@@ -3,6 +3,9 @@ import path from 'path'
 import express from 'express'
 const app = express();
 
+import * as admin from 'firebase-admin'
+admin.initializeApp()
+
 // 環境変数の呼び出し
 require('./env')
 

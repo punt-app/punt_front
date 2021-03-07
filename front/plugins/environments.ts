@@ -14,6 +14,13 @@ export type EnvVars = {
   LINE_CLIENT_ID: string
   LINE_LOGIN_REDIRECT_URI: string
   FB_FUNCTIONS_URL: string
+  FB_API_KEY: string
+  FB_AUTH_DOMAIN: string
+  FB_PROJECT_ID: string
+  FB_STORAGE_BUCKET: string
+  FB_MESSAGING_SENDER_ID: string
+  FB_APP_ID: string
+  FB_MEASUREMENT_ID: string
 }
 
 export const environments: EnvVars = {
@@ -29,6 +36,13 @@ export const environments: EnvVars = {
   LINE_CLIENT_ID: process.env.LINE_CLIENT_ID!,
   LINE_LOGIN_REDIRECT_URI: process.env.LINE_LOGIN_REDIRECT_URI!,
   FB_FUNCTIONS_URL: process.env.FB_FUNCTIONS_URL!,
+  FB_API_KEY: process.env.FB_API_KEY!,
+  FB_AUTH_DOMAIN: process.env.FB_AUTH_DOMAIN!,
+  FB_PROJECT_ID: process.env.FB_PROJECT_ID!,
+  FB_STORAGE_BUCKET: process.env.FB_STORAGE_BUCKET!,
+  FB_MESSAGING_SENDER_ID: process.env.FB_MESSAGING_SENDER_ID!,
+  FB_APP_ID: process.env.FB_APP_ID!,
+  FB_MEASUREMENT_ID: process.env.FB_MEASUREMENT_ID!
 }
 
 export default defineNuxtPlugin((_, inject) => {

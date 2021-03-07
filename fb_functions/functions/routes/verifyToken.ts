@@ -65,6 +65,17 @@ const verifyLineToken = async (token: string) => {
   })
 }
 
+// アクセストークンの検証
+const getLineUserProfile = async (token: string) => {
+  const url: string = 'https://api.line.me/v2/profile'
+
+  return await axios.get(url, {
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
+  })
+}
+
 // アクセストークンの発行と検証
 router.post('/token', async (req: any, res: any) => {
   const reqToken: string = req.body.token
@@ -91,6 +102,36 @@ router.post('/token', async (req: any, res: any) => {
   }
   
   return res.status(200).send(verifiedData)
+})
+
+// アクセストークンの取得
+router.post('/accessToken', async (req: any, res: any) => {
+  const reqToken: string = req.body.token
+  if (!reqToken) {
+    return res.status(400).send({
+      message: 'LINE code not found'
+    })
+  }
+
+  const result = await getLineToken(reqToken)
+  const lineAccessToken = JSON.parse(result).access_token
+  if (!lineAccessToken) {
+    return res.status(400).send({
+      message: 'Access Token not found'
+    })
+  }
+
+  const profile = await getLineUserProfile(lineAccessToken)
+  const profileData = profile.data
+  if (!profileData.userId) {
+    return res.status(400).send({
+      message: 'User profile not found'
+    })
+  }
+
+  return res.status(200).send({
+    profile: profileData
+  })
 })
 
 // TODO: export default に変更

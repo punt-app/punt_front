@@ -1,20 +1,14 @@
 <template>
-  <div class="page__wrapper">
-    <div class="page__container">
-      <h1 class="title">
-        家事シェア
-      </h1>
+  <div class="page__container">
+    <p class="message">
+      家事シェアはパートナーと家事を分担して見える化するサービスです。あなたが担当する家事を家事シェアが LINE でお知らせします。
+    </p>
 
-      <p class="message">
-        家事シェアはパートナーと家事を分担して見える化するサービスです。あなたが担当する家事を家事シェアが LINE でお知らせします。
-      </p>
-
-      <line-button
-        class="button__line_account"
-        button-text="LINE ログイン"
-        :url="lineUrl"
-      />
-    </div>
+    <line-button
+      class="button__line_account"
+      button-text="LINE ログイン"
+      :url="lineUrl"
+    />
   </div>
 </template>
 
@@ -23,6 +17,7 @@ import { defineComponent, useContext } from "@nuxtjs/composition-api";
 import { parseUrl } from '~/utils/parseUrl'
 
 export default defineComponent ({
+  layout: 'main',
   setup() {
     const {
       LINE_CLIENT_ID,
@@ -49,5 +44,5 @@ export default defineComponent ({
 </script>
 
 <style scoped lang="scss">
-@import "~assets/scss/top_page.scss";
+@import "~assets/scss/main_page.scss";
 </style>

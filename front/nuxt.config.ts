@@ -3,7 +3,6 @@ import fs from 'fs'
 
 import { NuxtConfig } from '@nuxt/types'
 import { environments } from './plugins/environments'
-import axiosConfig from './plugins/axios'
 
 if (!process.env.CI) {
   Object.keys(environments).forEach(key => {
@@ -60,7 +59,9 @@ const config: NuxtConfig = {
 
   // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
   plugins: [
-    '~/plugins/environments'
+    '~/plugins/environments',
+    '~/plugins/firebaseInit',
+    '~/plugins/axios-accessor'
   ],
 
   // Auto import components (https://go.nuxtjs.dev/config-components)
@@ -83,7 +84,6 @@ const config: NuxtConfig = {
   ],
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
-  axios: axiosConfig,
 
   // Build Configuration (https://go.nuxtjs.dev/config-build)
   build: {
