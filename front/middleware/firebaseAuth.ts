@@ -3,8 +3,9 @@ import { Context } from '@nuxt/types'
 
 const getFbLoginStatus = (): Promise<{uid: string}> => {
   return new Promise(resolve => {
-    firebase.auth().onAuthStateChanged(user => {
+    const unsubscribe = firebase.auth().onAuthStateChanged(user => {
       resolve(user)
+      unsubscribe()
     })
   })
 }

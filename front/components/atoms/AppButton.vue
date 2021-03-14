@@ -43,7 +43,8 @@ export default defineComponent({
 <style lang="scss" scoped>
 .app_button {
   color: $text-color-white;
-  background-color: $button-color-gray;
+  background-color: $button-color-orange;
+  display: block;
   padding: 1.2rem 4.8rem;
   border-radius: 0.8rem;
   transition: 0.1s;

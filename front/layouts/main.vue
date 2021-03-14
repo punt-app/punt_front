@@ -5,10 +5,20 @@
         家事シェア
       </h1>
 
-      <Nuxt />
+      <user-provider>
+        <Nuxt />
+      </user-provider>
     </div>
   </div>
 </template>
+
+<script lang="ts">
+import UserProvider from '~/components/UserProvider'
+
+export default {
+  components: { UserProvider }
+}
+</script>
 
 <style>
 @import "~assets/scss/main_page.scss";

@@ -1,33 +1,49 @@
 <template>
   <div>
-    <p>{{ state }}</p>
-    <div>
-      <app-button 
-        text="はじめての方"
-        to="/"
-      />
-    </div>
+    <app-button 
+      text="はじめての方"
+      to="/register"
+    />
+    <button @click="getUser()">button</button>
   </div>
 </template>
 
 <script lang="ts">
 import {
-  defineComponent,
-  reactive,
-  useContext,
+  defineComponent, inject, reactive, useAsync
 } from "@nuxtjs/composition-api";
 import firebase from '~/plugins/firebaseInit'
+// import userStore from '~/store/user'
+import UserKey from '~/composables/user-key'
+
+const getFbLoginStatus = (): Promise<{uid: string}> => {
+  return new Promise(resolve => {
+    const unsubscribe = firebase.auth().onAuthStateChanged(user => {
+      resolve(user)
+      unsubscribe()
+    })
+  })
+}
+
+/**
+ * カスタムトークンを生成して firebase にサインインする
+ */
+const getSignedFbUser = (token: string): Promise<{}> => {
+  return new Promise((resolve, reject) => {
+    firebase.auth().signInWithCustomToken(token)
+      .then(res => {
+        resolve(res)
+      })
+      .catch(error => {
+        reject(error)
+      })
+  })
+}
+
 
 export default defineComponent({
   layout: 'main',
   async middleware({ route, $axios, redirect }) {
-    const getFbLoginStatus = (): Promise<{uid: string}> => {
-      return new Promise(resolve => {
-        firebase.auth().onAuthStateChanged(user => {
-          resolve(user)
-        })
-      })
-    }
     const fbLoginStatus = await getFbLoginStatus()
 
     /**
@@ -70,21 +86,7 @@ export default defineComponent({
     )
     const { token } = resFbCustomToken.data
 
-    /**
-     * カスタムトークンを生成して firebase にサインインする
-     */
-    const getSignedFbUser = () => {
-      return new Promise((resolve, reject) => {
-        firebase.auth().signInWithCustomToken(token)
-          .then(res => {
-            resolve(res)
-          })
-          .catch(error => {
-            reject(error)
-          })
-      })
-    }
-    const fbSigedUser = await getSignedFbUser()
+    const fbSigedUser = await getSignedFbUser(token)
     if (fbSigedUser instanceof Error) {
       console.error('You cannot sign in with custom token.', fbSigedUser)
       return redirect('/login')
@@ -102,16 +104,37 @@ export default defineComponent({
       line_user_id: userId,
       line_display_name: displayName
     })
-    console.log('res: ', resAddUserFB)
+    if (resAddUserFB instanceof Error) {
+      console.error(resAddUserFB)
+    }
   },
+
   setup() {
     const state = reactive({
+      userId: null
     })
 
-    const { $axios, route } = useContext()
+    useAsync(async() => {
+      const { uid } = await firebase.auth().currentUser
+      state.userId = uid
+    })
+
+    const userState = inject(UserKey)
+    if (!userState) {
+      throw new Error(`${UserKey} is not provided.`)
+    }
+
+    /**
+     * 
+     */
+    const getUser = async() => {
+      const { data } = await userState.getUser(state.userId)
+      console.log('getuser', data)
+    }
 
     return {
-      state
+      state,
+      getUser
     }
   }
 })
